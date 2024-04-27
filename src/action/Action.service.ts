@@ -9,7 +9,9 @@ export class ActionService {
   constructor(
     @InjectRepository(Action)
     private actionRepository: Repository<Action>,
-  ) {}
+
+  ) {
+  }
 
   findAll(): Promise<Action[]> {
     return this.actionRepository.find({ relations: ['user', 'categorie'] });
@@ -57,7 +59,21 @@ export class ActionService {
     return qb.execute();
   }
 
-  async findByUser(id) {
+  async findSum(id, month, year) {
+    console.log(month);
+    const qb = this.actionRepository.createQueryBuilder('action');
+    qb.select(
+      'sum(montant) AS montant, action.userId, dateAjout, dateTransaction',
+    );
+    qb.innerJoin('action.user', 'user');
+    qb.where({ user: id })
+      .andWhere('EXTRACT(month FROM action.dateTransaction) = ' + month)
+      .andWhere('EXTRACT(year FROM action.dateTransaction) = ' + year);
+    console.log(qb.getSql());
+    return qb.execute();
+  }
+
+  async findByUser(id): Promise<any[]> {
     const qb = this.actionRepository.createQueryBuilder('action');
     qb.select(
       'action.id as id, montant, categorie, description, user.id as user, categorie.id as categorieId, dateAjout, dateTransaction',

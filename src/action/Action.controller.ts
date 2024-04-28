@@ -260,4 +260,12 @@ export class ActionController {
     res.setHeader('Content-Type', 'application/pdf');
     pdfStream.then(value => value.pipe(res))
   }
+
+  @Get('generateAll-categorie-bilan/:id')
+  async generatePDFAll(@Res() res: Response, @Param('id') id) {
+    const pdfStream = this.pdfService.generatePdfSumAll(id);
+    res.setHeader('Content-Disposition', 'attachment; filename="example.pdf"');
+    res.setHeader('Content-Type', 'application/pdf');
+    pdfStream.then(value => value.pipe(res))
+  }
 }

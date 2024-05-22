@@ -22,6 +22,7 @@ export class ActionController {
     private readonly actionService: ActionService,
     private jwtService: JwtService,
     private readonly pdfService: PdfService,
+
   ) {}
 
   @Get()
@@ -258,7 +259,7 @@ export class ActionController {
     const pdfStream = this.pdfService.generatePdf(id);
     res.setHeader('Content-Disposition', 'attachment; filename="example.pdf"');
     res.setHeader('Content-Type', 'application/pdf');
-    pdfStream.then(value => value.pipe(res))
+    pdfStream.then((value) => value.pipe(res));
   }
 
   @Get('generateAll-categorie-bilan/:id')
@@ -266,6 +267,6 @@ export class ActionController {
     const pdfStream = this.pdfService.generatePdfSumAll(id);
     res.setHeader('Content-Disposition', 'attachment; filename="example.pdf"');
     res.setHeader('Content-Type', 'application/pdf');
-    pdfStream.then(value => value.pipe(res))
+    pdfStream.then((value) => value.pipe(res));
   }
 }

@@ -127,7 +127,7 @@ export class ConnectionService {
       },
     });
 
-    const verificationUrl = `http://localhost:3006/connection/verify-email?token=${token}`;
+    const verificationUrl = `https://www.krisscode.fr/connection/verify-email?token=${token}`;
 
     const mailOptions = {
       from: 'noreply_justerecipes@krissclotilde.com',

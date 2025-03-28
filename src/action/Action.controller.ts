@@ -16,13 +16,15 @@ import { CategorieDTO } from '../dto/CategorieDTO';
 import { JwtService } from '@nestjs/jwt';
 import { PdfService } from './Pdf.service';
 import { Response } from 'express';
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 @Controller('action')
 export class ActionController {
   constructor(
     private readonly actionService: ActionService,
     private jwtService: JwtService,
     private readonly pdfService: PdfService,
-
   ) {}
 
   @Get()
@@ -222,7 +224,7 @@ export class ActionController {
   @Delete(':id')
   async remove(@Param('id') id, @Body() jwt: { jwt: string }): Promise<string> {
     const data = await this.jwtService.verifyAsync(jwt.jwt, {
-      secret: 'Je veux pas donner mon mot de passe',
+      secret: process.env.secret,
     });
     if (!data) {
       throw new UnauthorizedException();
@@ -234,7 +236,7 @@ export class ActionController {
   @Put(':id')
   async update(@Param('id') id, @Body() actinDTO: ActionDTO): Promise<string> {
     const data = await this.jwtService.verifyAsync(actinDTO.jwt, {
-      secret: 'Je veux pas donner mon mot de passe',
+      secret: process.env.secret,
     });
     if (!data) {
       throw new UnauthorizedException();
@@ -246,7 +248,7 @@ export class ActionController {
   @Post()
   async create(@Body() actionDTO: ActionDTO) {
     const data = await this.jwtService.verifyAsync(actionDTO.jwt, {
-      secret: 'Je veux pas donner mon mot de passe',
+      secret: process.env.secret,
     });
     if (!data) {
       throw new UnauthorizedException();

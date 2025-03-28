@@ -4,5 +4,6 @@ export class UserDTO {
   password: string;
   readonly nom: string;
   readonly prenom: string;
+  isEmailVerified:boolean
   jwt?: string;
 }

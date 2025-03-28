@@ -13,5 +13,9 @@ export class User {
   @Column()
   prenom: string;
 
+  @Column({ default: false })
+  isEmailVerified!: boolean;
 
+  @Column({ nullable: true })
+  emailVerificationToken?: string;
 }

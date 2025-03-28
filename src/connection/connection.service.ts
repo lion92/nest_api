@@ -65,7 +65,7 @@ export class ConnectionService {
     if (!userFind) {
       throw new NotFoundException('User Not found');
     } else {
-      if (!user.isEmailVerified) {
+      if (!userFind.isEmailVerified) {
         throw new UnauthorizedException('Email not verified');
       }
 
@@ -127,7 +127,7 @@ export class ConnectionService {
       },
     });
 
-    const verificationUrl = `https://www.krisscode.fr/recette/auth/verify-email?token=${token}`;
+    const verificationUrl = `http://localhost:3006/connection/verify-email?token=${token}`;
 
     const mailOptions = {
       from: 'noreply_justerecipes@krissclotilde.com',

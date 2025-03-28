@@ -271,4 +271,6 @@ export class ActionController {
     res.setHeader('Content-Type', 'application/pdf');
     pdfStream.then((value) => value.pipe(res));
   }
+
+
 }

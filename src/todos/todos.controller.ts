@@ -17,7 +17,6 @@ import { JwtService } from '@nestjs/jwt';
 import { FileInterceptor } from '@nestjs/platform-express';
 import e from 'express';
 import { diskStorage } from 'multer';
-import process from 'process';
 import * as dotenv from 'dotenv';
 dotenv.config();
 

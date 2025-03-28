@@ -39,6 +39,8 @@ export class ConnectionService {
 
     const newUser = this.userRepository.create({
       email: userCreate.email,
+      nom:userCreate.nom,
+      prenom:userCreate.prenom,
       password: hashedPassword,
       emailVerificationToken,
       isEmailVerified: false, // Ajouter un champ pour suivre la vérification de l'email
@@ -53,41 +55,80 @@ export class ConnectionService {
   async login(
     user: LoginDTO,
     res,
-  ): Promise<{
-    id: number;
-    email: string;
-    prenom: string;
-    nom: string;
-    jwt: string;
-  }> {
-    const { password, email } = user;
-    const userFind = await this.userRepository.findOneBy({ email: email });
-    if (!userFind) {
-      throw new NotFoundException('User Not found');
-    } else {
-      if (!userFind.isEmailVerified) {
-        throw new UnauthorizedException('Email not verified');
+  ): Promise<any> {
+    try {
+      const { password, email } = user;
+
+      // Vérifier si l'email existe
+      const userFind = await this.userRepository.findOneBy({ email: email });
+      if (!userFind) {
+        return {
+          status: 404,
+          success: false,
+          message: 'Utilisateur non trouvé. Vérifiez votre email.'
+        };
       }
 
-      const bool = await compare(user.password, userFind.password);
+      // Vérifier si l'email est vérifié
+      if (!userFind.isEmailVerified) {
+        return {
+          status: 401,
+          success: false,
+          message: 'Veuillez vérifier votre email avant de vous connecter.'
+        };
+      }
 
-      if (!bool) {
-        throw new UnauthorizedException('illegal');
-      } else {
+      // Vérifier le mot de passe
+      const passwordValid = await compare(user.password, userFind.password);
+      if (!passwordValid) {
+        return {
+          status: 401,
+          success: false,
+          message: 'Mot de passe incorrect.'
+        };
+      }
+
+      // Générer le JWT
+      try {
         const jwt = await this.jwtService.signAsync(
           { id: userFind.id },
           { secret: process.env.secret },
         );
 
+        if (!jwt) {
+          return {
+            status: 500,
+            success: false,
+            message: 'Erreur lors de la génération du token JWT.'
+          };
+        }
+
+        // Créer le cookie et retourner la réponse
         res.cookie('jwt', jwt, { httpOnly: true });
         return {
+          status: 200,
+          success: true,
           id: userFind.id,
           email: userFind.email,
           nom: userFind.nom,
           prenom: userFind.prenom,
           jwt: jwt,
         };
+      } catch (jwtError) {
+        console.error('Erreur JWT:', jwtError);
+        return {
+          status: 500,
+          success: false,
+          message: 'Erreur de connexion: impossible de générer le token d\'authentification.'
+        };
       }
+    } catch (error) {
+      // Renvoyer une réponse d'erreur générique en cas d'exception non gérée
+      return {
+        status: 500,
+        success: false,
+        message: 'Une erreur s\'est produite lors de la connexion.'
+      };
     }
   }
 

@@ -14,7 +14,7 @@ import { UserDTO } from '../dto/UserDTO';
 import { Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
-import { User } from '../entity/User.entity';
+import { User } from '../entity/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
 dotenv.config();

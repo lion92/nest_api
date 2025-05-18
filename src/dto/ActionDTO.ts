@@ -1,5 +1,5 @@
-import { User } from '../entity/User.entity';
-import { Categorie } from '../entity/Categorie.entity';
+import { User } from '../entity/user.entity';
+import { Categorie } from '../entity/categorie.entity';
 
 export class ActionDTO {
   readonly id: number;

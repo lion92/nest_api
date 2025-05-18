@@ -7,7 +7,7 @@ import {
 import { UserDTO } from '../dto/UserDTO';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../entity/User.entity';
+import { User } from '../entity/user.entity';
 import { compare, hash } from 'bcrypt';
 import { LoginDTO } from '../dto/LoginDTO';
 import { JwtService } from '@nestjs/jwt';

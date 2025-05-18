@@ -1,0 +1,74 @@
+import {
+  Controller,
+  Post,
+  Get,
+  Param,
+  Body,
+  Patch,
+  Delete,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { EnvelopesService } from './envelopes.service';
+import { JwtService } from '@nestjs/jwt';
+
+@Controller('envelopes')
+export class EnvelopesController {
+  constructor(
+    private readonly envelopeService: EnvelopesService,
+    private readonly jwtService: JwtService,
+  ) {}
+
+  // 📄 Récupérer toutes les enveloppes d’un utilisateur pour un mois et une année
+  @Get(':userId/:month/:year')
+  async findAll(
+    @Param('userId') userId: number,
+    @Param('month') month: number,
+    @Param('year') year: number,
+  ) {
+    return this.envelopeService.findByUserAndMonth(userId, month, year);
+  }
+
+  // ➕ Créer une enveloppe
+  @Post()
+  async create(@Body() body: any) {
+    const { name, userId, month, year, jwt } = body;
+
+    const data = await this.jwtService.verifyAsync(jwt, {
+      secret: process.env.secret,
+    });
+    console.log(body);
+
+    if (!data) throw new UnauthorizedException();
+
+    return this.envelopeService.create(name, userId, month, year);
+  }
+
+  // ✏️ Modifier le nom d’une enveloppe
+  @Patch(':id')
+  async update(@Param('id') id: string, @Body() body: any) {
+    const { name, jwt } = body;
+
+    const data = await this.jwtService.verifyAsync(jwt, {
+      secret: process.env.secret,
+    });
+
+    if (!data) throw new UnauthorizedException();
+
+    return this.envelopeService.update(id, name);
+  }
+
+  // ❌ Supprimer une enveloppe
+  @Delete(':id')
+  async remove(@Param('id') id: string, @Body() body: any) {
+    const { jwt } = body;
+
+    const data = await this.jwtService.verifyAsync(jwt, {
+      secret: process.env.secret,
+    });
+
+    if (!data) throw new UnauthorizedException();
+
+    await this.envelopeService.delete(id);
+    return 'ok';
+  }
+}

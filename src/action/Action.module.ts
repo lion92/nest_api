@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Action } from '../entity/Action.entity';
+import { Action } from '../entity/action.entity';
 import { ActionController } from './Action.controller';
 import { ActionService } from './Action.service';
 import { JwtService } from '@nestjs/jwt';

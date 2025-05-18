@@ -1,7 +1,6 @@
-// src/envelopes/envelope.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Transaction } from './transaction.entity';
-
+import { User } from './user.entity';
 
 @Entity()
 export class Envelope {
@@ -17,6 +16,9 @@ export class Envelope {
   @Column()
   year: number;
 
-  @OneToMany(() => Transaction, (transaction) => transaction.envelope, { cascade: true })
+  @ManyToOne(() => User, (user) => user.envelopes)
+  user: User;
+
+  @OneToMany(() => Transaction, (transaction) => transaction.envelope)
   transactions: Transaction[];
 }

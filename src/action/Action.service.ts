@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ActionDTO } from '../dto/ActionDTO';
-import { Action } from '../entity/Action.entity';
+import { Action } from '../entity/action.entity';
 
 @Injectable()
 export class ActionService {

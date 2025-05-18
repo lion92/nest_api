@@ -12,6 +12,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RevenueModule } from './revenue/revenue.module';
 import * as dotenv from 'dotenv';
 import { TransactionsModule } from './transactions/transaction/transactions.module';
+import { EnvelopesModule } from './envelopes/envelopes.module';
 
 // Charger les variables d'environnement dès le début
 dotenv.config();
@@ -81,7 +82,8 @@ if (!process.env.psw) {
     categorieModule,
     ActionModule,
     RevenueModule,
-    TransactionsModule, // ✅ ajout correct ici
+    TransactionsModule,
+    EnvelopesModule, // ✅ ajout correct ici
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,8 +1,8 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { User } from './User.entity';
+import { User } from './user.entity';
 import { categorieModule } from '../categorie/Categorie.module';
 import { Module } from '@nestjs/common';
-import { Categorie } from './Categorie.entity';
+import { Categorie } from './categorie.entity';
 
 @Module({
   imports: [categorieModule],

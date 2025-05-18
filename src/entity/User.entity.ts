@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Revenue } from './revenue.entity';
 
 @Entity()
 export class User {
@@ -18,4 +19,7 @@ export class User {
 
   @Column({ nullable: true })
   emailVerificationToken?: string;
+
+  @OneToMany(() => Revenue, (revenue) => revenue.user)
+  revenues: Revenue[];
 }

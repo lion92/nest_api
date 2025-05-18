@@ -9,6 +9,7 @@ import { ActionModule } from './action/Action.module';
 import { JwtModule } from '@nestjs/jwt';
 import { MulterModule } from '@nestjs/platform-express';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { RevenueModule } from './revenue/revenue.module';
 import * as dotenv from 'dotenv';
 
 // Assurez-vous que dotenv est chargé avant tout autre code
@@ -77,6 +78,7 @@ if (!process.env.psw) {
     ConnectionModule,
     categorieModule,
     ActionModule,
+    RevenueModule,
   ],
   controllers: [AppController],
   providers: [AppService],

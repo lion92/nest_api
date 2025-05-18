@@ -11,8 +11,9 @@ import { MulterModule } from '@nestjs/platform-express';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RevenueModule } from './revenue/revenue.module';
 import * as dotenv from 'dotenv';
+import { TransactionsModule } from './transactions/transaction/transactions.module';
 
-// Assurez-vous que dotenv est chargé avant tout autre code
+// Charger les variables d'environnement dès le début
 dotenv.config();
 
 // Vérification de la présence des variables d'environnement essentielles
@@ -28,7 +29,7 @@ if (!process.env.psw) {
 
 @Module({
   imports: [
-    // Configuration globale pour l'accès aux variables d'environnement
+    // Variables d'environnement globales
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -37,7 +38,7 @@ if (!process.env.psw) {
       dest: './uploads',
     }),
 
-    // TypeORM avec vérification des variables d'environnement
+    // Configuration TypeORM
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -51,13 +52,13 @@ if (!process.env.psw) {
           username: 'root',
           password: password,
           database: 'crud_nest',
-          entities: ['dist/**/*.entity.js'],  // Chemin corrigé pour les fichiers compilés
+          entities: ['dist/**/*.entity.js'],
           synchronize: true,
         };
       },
     }),
 
-    // JwtModule avec vérification de la clé secrète
+    // Configuration JWT
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -74,22 +75,23 @@ if (!process.env.psw) {
       },
     }),
 
+    // Modules de l'application
     TodosModule,
     ConnectionModule,
     categorieModule,
     ActionModule,
     RevenueModule,
+    TransactionsModule, // ✅ ajout correct ici
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {
   constructor(private configService: ConfigService) {
-    // Vérification de la configuration dans le constructeur
     const secret = this.configService.get('secret');
     const dbPassword = this.configService.get('psw');
 
-    console.log('Configuration chargée:', {
+    console.log('Configuration chargée :', {
       secretDefined: !!secret,
       dbPasswordDefined: !!dbPassword,
     });

@@ -13,6 +13,9 @@ export class Envelope {
   @Column()
   month: number;
 
+  @Column('decimal', { precision: 10, scale: 2, default: 0 })
+  amount: number;
+
   @Column()
   year: number;
 

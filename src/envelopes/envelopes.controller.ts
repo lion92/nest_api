@@ -31,18 +31,16 @@ export class EnvelopesController {
   // ➕ Créer une enveloppe
   @Post()
   async create(@Body() body: any) {
-    const { name, userId, month, year, jwt } = body;
+    const { name, amount, userId, month, year, jwt } = body;
 
     const data = await this.jwtService.verifyAsync(jwt, {
       secret: process.env.secret,
     });
-    console.log(body);
 
     if (!data) throw new UnauthorizedException();
 
-    return this.envelopeService.create(name, userId, month, year);
+    return this.envelopeService.create(name, amount, userId, month, year);
   }
-
   // ✏️ Modifier le nom d’une enveloppe
   @Patch(':id')
   async update(@Param('id') id: string, @Body() body: any) {

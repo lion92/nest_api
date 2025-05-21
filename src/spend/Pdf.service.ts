@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import PDFDocument from 'pdfkit-table';
 import * as fs from 'fs';
-import { ActionService } from './Action.service';
+import { SpendService } from './Spend.service';
 
 @Injectable()
 export class PdfService {
-  constructor(private actionService: ActionService) {
+  constructor(private actionService: SpendService) {
   }
 
   async generatePdf(id: number): Promise<fs.ReadStream> {

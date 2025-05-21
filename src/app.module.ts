@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TodosModule } from './todos/todos.module';
 import { ConnectionModule } from './connection/connection.module';
 import { categorieModule } from './categorie/Categorie.module';
-import { ActionModule } from './action/Action.module';
+import { SpendModule } from './spend/SpendModule';
 import { JwtModule } from '@nestjs/jwt';
 import { MulterModule } from '@nestjs/platform-express';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -80,7 +80,7 @@ if (!process.env.psw) {
     TodosModule,
     ConnectionModule,
     categorieModule,
-    ActionModule,
+    SpendModule,
     RevenueModule,
     TransactionsModule,
     EnvelopesModule, // ✅ ajout correct ici

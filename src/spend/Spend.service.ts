@@ -5,7 +5,7 @@ import { ActionDTO } from '../dto/ActionDTO';
 import { Action } from '../entity/action.entity';
 
 @Injectable()
-export class ActionService {
+export class SpendService {
   constructor(
     @InjectRepository(Action)
     private actionRepository: Repository<Action>,

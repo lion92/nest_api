@@ -10,7 +10,7 @@ import {
   Res,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ActionService } from './Action.service';
+import { SpendService } from './Spend.service';
 import { ActionDTO } from '../dto/ActionDTO';
 import { CategorieDTO } from '../dto/CategorieDTO';
 import { JwtService } from '@nestjs/jwt';
@@ -20,9 +20,9 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 @Controller('action')
-export class ActionController {
+export class SpendController {
   constructor(
-    private readonly actionService: ActionService,
+    private readonly actionService: SpendService,
     private jwtService: JwtService,
     private readonly pdfService: PdfService,
   ) {}

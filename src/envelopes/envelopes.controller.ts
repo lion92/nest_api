@@ -44,7 +44,7 @@ export class EnvelopesController {
   // ✏️ Modifier le nom d’une enveloppe
   @Patch(':id')
   async update(@Param('id') id: string, @Body() body: any) {
-    const { name, jwt } = body;
+    const { name, amount, jwt } = body;
 
     const data = await this.jwtService.verifyAsync(jwt, {
       secret: process.env.secret,
@@ -52,7 +52,7 @@ export class EnvelopesController {
 
     if (!data) throw new UnauthorizedException();
 
-    return this.envelopeService.update(id, name);
+    return this.envelopeService.update(id, name, amount);
   }
 
   // ❌ Supprimer une enveloppe

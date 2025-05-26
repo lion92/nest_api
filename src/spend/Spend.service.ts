@@ -9,9 +9,7 @@ export class SpendService {
   constructor(
     @InjectRepository(Action)
     private actionRepository: Repository<Action>,
-
-  ) {
-  }
+  ) {}
 
   findAll(): Promise<Action[]> {
     return this.actionRepository.find({ relations: ['user', 'categorie'] });

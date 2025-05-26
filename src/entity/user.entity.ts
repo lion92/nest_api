@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Revenue } from './revenue.entity';
 import { Envelope } from './envelope.entity';
+import { Ticket } from './ticket.entity';
 
 @Entity()
 export class User {
@@ -26,4 +27,7 @@ export class User {
 
   @OneToMany(() => Envelope, (envelope) => envelope.user)
   envelopes: Envelope[];
+
+  @OneToMany(() => Ticket, (ticket) => ticket.user, { cascade: true })
+  tickets: Ticket[];
 }

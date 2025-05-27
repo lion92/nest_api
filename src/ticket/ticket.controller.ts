@@ -4,10 +4,10 @@ import {
   HttpException,
   HttpStatus,
   Post,
-  Res,
-  UnauthorizedException,
   UploadedFile,
   UseInterceptors,
+  Res,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -118,5 +118,24 @@ export class TicketController {
       where: { user: { id: user.id } },
       order: { dateAjout: 'DESC' },
     });
+  }
+
+  @Post('delete')
+  async deleteTicket(@Body() body: { jwt: string; id: number }) {
+    const { jwt, id } = body;
+
+    const data = await this.jwtService.verifyAsync(jwt, {
+      secret: process.env.secret,
+    });
+
+    if (!data) throw new UnauthorizedException();
+
+    const user = await this.userRepository.findOne({ where: { id: data.id } });
+
+    if (!user)
+      throw new HttpException('Utilisateur non trouvé', HttpStatus.NOT_FOUND);
+
+    await this.ticketService.deleteTicket(id, user);
+    return { message: 'Ticket supprimé avec succès.' };
   }
 }

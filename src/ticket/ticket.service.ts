@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import * as Tesseract from 'tesseract.js';
 import * as fs from 'fs';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -50,5 +50,17 @@ export class TicketService {
         message: 'Erreur OCR : ' + err.message,
       };
     }
+  }
+
+  async deleteTicket(id: number, user: User): Promise<void> {
+    const ticket = await this.ticketRepository.findOne({
+      where: { id, user },
+    });
+
+    if (!ticket) {
+      throw new NotFoundException('Ticket non trouvé ou non autorisé.');
+    }
+
+    await this.ticketRepository.remove(ticket);
   }
 }

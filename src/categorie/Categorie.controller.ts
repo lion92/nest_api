@@ -54,7 +54,7 @@ export class CategorieController {
     if (!data) {
       throw new UnauthorizedException();
     }
-    await this.connectionService.create(categorieDTO);
+    return await this.connectionService.create(categorieDTO);
   }
 
 }

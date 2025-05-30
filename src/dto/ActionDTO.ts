@@ -10,4 +10,5 @@ export class ActionDTO {
   user: User;
   categorie: Categorie;
   jwt?: string;
+  iconName?:string
 }

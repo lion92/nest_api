@@ -18,7 +18,7 @@ export class SpendService {
   async findOneBy(id: number): Promise<Action | null> {
     return await this.actionRepository.findOne({
       where: { id: id },
-      relations: ['user'],
+      relations: ['user', 'categorie'],
     });
   }
 
@@ -42,57 +42,104 @@ export class SpendService {
   }
 
   async findCategorieSum(id, month, year) {
-    console.log(month);
     const qb = this.actionRepository.createQueryBuilder('action');
-    qb.select(
-      'sum(montant) AS montant,categorieId, color, categorie, action.userId, dateAjout, dateTransaction, categorie.budgetDebutMois as budgetDebutMois',
-    );
+    qb.select([
+      'SUM(montant) AS montant',
+      'categorie.id AS categorieId',
+      'categorie.color AS color',
+      'categorie.categorie AS categorie',
+      'categoryImage.iconName AS iconName',
+      'action.userId AS userId',
+      'action.dateAjout AS dateAjout',
+      'action.dateTransaction AS dateTransaction',
+      'categorie.budgetDebutMois AS budgetDebutMois'
+    ]);
     qb.innerJoin('action.user', 'user');
     qb.innerJoin('action.categorie', 'categorie');
-    qb.where({ user: id })
-      .andWhere('EXTRACT(month FROM action.dateTransaction) = ' + month)
-      .andWhere('EXTRACT(year FROM action.dateTransaction) = ' + year);
-    qb.groupBy('categorieId');
-    console.log(qb.getSql());
+    qb.leftJoin('category_image', 'categoryImage', 'categoryImage.categorieId = categorie.id');
+    qb.where('user.id = :id', { id })
+      .andWhere('EXTRACT(month FROM action.dateTransaction) = :month', { month })
+      .andWhere('EXTRACT(year FROM action.dateTransaction) = :year', { year });
+    qb.groupBy('categorie.id, categorie.color, categorie.categorie, categoryImage.iconName, categorie.budgetDebutMois, action.userId, action.dateAjout, action.dateTransaction');
     return qb.execute();
   }
 
   async findSum(id, month, year) {
-    console.log(month);
     const qb = this.actionRepository.createQueryBuilder('action');
-    qb.select(
-      'sum(montant) AS montant, action.userId, dateAjout, dateTransaction',
-    );
+    qb.select([
+      'SUM(montant) AS montant',
+      'action.userId AS userId',
+      'action.dateAjout AS dateAjout',
+      'action.dateTransaction AS dateTransaction'
+    ]);
     qb.innerJoin('action.user', 'user');
-    qb.where({ user: id })
-      .andWhere('EXTRACT(month FROM action.dateTransaction) = ' + month)
-      .andWhere('EXTRACT(year FROM action.dateTransaction) = ' + year);
-    console.log(qb.getSql());
+    qb.where('user.id = :id', { id })
+      .andWhere('EXTRACT(month FROM action.dateTransaction) = :month', { month })
+      .andWhere('EXTRACT(year FROM action.dateTransaction) = :year', { year });
     return qb.execute();
   }
 
   async findByUser(id): Promise<any[]> {
     const qb = this.actionRepository.createQueryBuilder('action');
-    qb.select(
-      'action.id as id, montant, categorie, description, user.id as user, categorie.id as categorieId, dateAjout, dateTransaction',
-    );
+    qb.select([
+      'action.id AS id',
+      'montant',
+      'categorie.categorie AS categorie',
+      'categorie.color AS color',
+      'categoryImage.iconName AS iconName',
+      'description',
+      'user.id AS user',
+      'categorie.id AS categorieId',
+      'dateAjout',
+      'dateTransaction'
+    ]);
     qb.innerJoin('action.user', 'user');
     qb.innerJoin('action.categorie', 'categorie');
-    qb.where({ user: id });
-    console.log(qb.getSql());
+    qb.leftJoin('category_image', 'categoryImage', 'categoryImage.categorieId = categorie.id');
+    qb.where('user.id = :id', { id });
     return qb.execute();
   }
 
   findCategorieSumAll(id) {
     const qb = this.actionRepository.createQueryBuilder('action');
-    qb.select(
-      'sum(montant) AS montant,categorieId, color, categorie, action.userId, dateAjout, dateTransaction, categorie.budgetDebutMois as budgetDebutMois',
-    );
+    qb.select([
+      'SUM(montant) AS montant',
+      'categorie.id AS categorieId',
+      'categorie.color AS color',
+      'categorie.categorie AS categorie',
+      'categoryImage.iconName AS iconName',
+      'action.userId AS userId',
+      'action.dateAjout AS dateAjout',
+      'action.dateTransaction AS dateTransaction',
+      'categorie.budgetDebutMois AS budgetDebutMois'
+    ]);
     qb.innerJoin('action.user', 'user');
-    qb.where({ user: id });
     qb.innerJoin('action.categorie', 'categorie');
-    qb.groupBy('categorieId');
-    console.log(qb.getSql());
+    qb.leftJoin('category_image', 'categoryImage', 'categoryImage.categorieId = categorie.id');
+    qb.where('user.id = :id', { id });
+    qb.groupBy('categorie.id, categorie.color, categorie.categorie, categoryImage.iconName, categorie.budgetDebutMois, action.userId, action.dateAjout, action.dateTransaction');
     return qb.execute();
+  }
+
+  async findByCategorie(categorieId: number): Promise<Action[]> {
+    return this.actionRepository.find({
+      where: {
+        categorie: { id: categorieId },
+      },
+      relations: ['user', 'categorie'],
+    });
+  }
+
+  async findByUserAndMonthYear(userId: number, month: number, year: number): Promise<Action[]> {
+    return this.actionRepository
+      .createQueryBuilder('action')
+      .leftJoinAndSelect('action.user', 'user')
+      .leftJoinAndSelect('action.categorie', 'categorie')
+      .leftJoin('category_image', 'categoryImage', 'categoryImage.categorieId = categorie.id')
+      .addSelect('categoryImage.iconName')
+      .where('user.id = :userId', { userId })
+      .andWhere('EXTRACT(month FROM action.dateTransaction) = :month', { month })
+      .andWhere('EXTRACT(year FROM action.dateTransaction) = :year', { year })
+      .getRawMany();
   }
 }

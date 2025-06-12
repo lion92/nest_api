@@ -1,11 +1,11 @@
 import {
+  Body,
   Controller,
-  Post,
+  Delete,
   Get,
   Param,
-  Body,
   Patch,
-  Delete,
+  Post,
   UnauthorizedException,
 } from '@nestjs/common';
 import { EnvelopesService } from './envelopes.service';
@@ -31,7 +31,7 @@ export class EnvelopesController {
   // ➕ Créer une enveloppe
   @Post()
   async create(@Body() body: any) {
-    const { name, amount, userId, month, year, jwt } = body;
+    const { name, amount, userId, month, year, icone, jwt } = body;
 
     const data = await this.jwtService.verifyAsync(jwt, {
       secret: process.env.secret,
@@ -39,12 +39,20 @@ export class EnvelopesController {
 
     if (!data) throw new UnauthorizedException();
 
-    return this.envelopeService.create(name, amount, userId, month, year);
+    return this.envelopeService.create(
+      name,
+      amount,
+      userId,
+      month,
+      year,
+      icone,
+    );
   }
+
   // ✏️ Modifier le nom d’une enveloppe
   @Patch(':id')
   async update(@Param('id') id: string, @Body() body: any) {
-    const { name, amount, jwt } = body;
+    const { name, amount, jwt, icone } = body;
 
     const data = await this.jwtService.verifyAsync(jwt, {
       secret: process.env.secret,
@@ -52,7 +60,7 @@ export class EnvelopesController {
 
     if (!data) throw new UnauthorizedException();
 
-    return this.envelopeService.update(id, name, amount);
+    return this.envelopeService.update(id, name, amount, icone);
   }
 
   // ❌ Supprimer une enveloppe

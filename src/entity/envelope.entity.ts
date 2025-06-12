@@ -16,6 +16,9 @@ export class Envelope {
   @Column('decimal', { precision: 10, scale: 2, default: 0 })
   amount: number;
 
+  @Column({ default: '' }) // Champ icône ajouté avec valeur par défaut vide
+  icone: string;
+
   @Column()
   year: number;
 

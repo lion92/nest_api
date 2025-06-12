@@ -20,19 +20,21 @@ export class EnvelopesService {
     userId: number,
     month: number,
     year: number,
+    icone: string,
   ): Promise<Envelope> {
     console.log(userId);
     const user = await this.userRepo.findOneBy({ id: userId });
     if (!user) {
       throw new NotFoundException('Utilisateur non trouvé');
     }
-
+    const iconCode = icone ? icone.codePointAt(0)?.toString(16).toUpperCase() : '';
     const envelope = this.envelopeRepo.create({
       name,
       amount,
       user,
       month,
       year,
+      icone: iconCode, // ✅ ici c'est bien "icone"
     });
 
     return this.envelopeRepo.save(envelope);
@@ -42,15 +44,19 @@ export class EnvelopesService {
     id: string,
     newName: string,
     newAmount?: number,
+    icone?:string
   ): Promise<Envelope> {
     const envelope = await this.envelopeRepo.findOneBy({ id });
     if (!envelope) {
       throw new NotFoundException('Enveloppe non trouvée');
     }
-
+    const iconCode = icone ? icone.codePointAt(0)?.toString(16).toUpperCase() : '';
     envelope.name = newName;
     if (newAmount !== undefined) {
       envelope.amount = newAmount;
+    }
+    if (iconCode !== undefined) {
+      envelope.icone = iconCode;
     }
 
     return this.envelopeRepo.save(envelope);
